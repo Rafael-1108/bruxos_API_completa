@@ -173,7 +173,8 @@ const updateBruxo = (req, res) => {
         ...(especialidade && {especialidade}),
         ...(nivelMagia && {nivelMagia}),
         ...(varinha && {varinha}), 
-        ...(ativo && {ativo})
+        ...(ativo && {ativo}),
+        ...(casa && {casa})   
     }
         : bruxo
     );

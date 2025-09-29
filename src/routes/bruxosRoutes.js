@@ -3,7 +3,8 @@ import {
     getAllBruxos, 
     getBruxoById,
     createBruxo,
-    deleteBruxos
+    deleteBruxos,
+    updateBruxo
 } from "../controllers/bruxosController.js";
 
 const router = express.Router();
@@ -11,6 +12,7 @@ const router = express.Router();
 router.get("/", getAllBruxos);
 router.get("/:id", getBruxoById);
 router.post("/", createBruxo);
-router.post("/:id", deleteBruxos);
+router.delete("/:id", deleteBruxos);
+router.put("/:id", updateBruxo);
 
 export default router;

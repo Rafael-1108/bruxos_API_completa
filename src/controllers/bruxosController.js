@@ -35,8 +35,8 @@ const createBruxo = (req, res) => {
     const casaLista = [ "Grifinória","Grifinoria", "Sonserina", "Corvinal", "Lufa-Lufa" ]
     
     if (!nome || !varinha) {
-        return res.status(400).json({
-            sucess: false,
+            res.status(400).json({
+            success: false,
             message: "Nome e varinha são obrigatórios",
             error: "OBRIGATORY_ELEMENTS",
             suggestions: [
@@ -46,9 +46,10 @@ const createBruxo = (req, res) => {
         });
     }
 
-    if (!casa || !casaLista.includes(casa.toLowerCase())) {
-        return res.status(400).json({
-            sucess: false,
+    if (!casa || !casaLista.includes(casa)) {
+            res.status(400).json({
+            status: 400,
+            success: false,
             message: `O campo 'casa' deve ser existir e ser preenchido com uma das seguintes opções: ${casaLista.join(", ")}!`,
             error: "OBRIGATORY_ELEMENTS",
             suggestions: [
@@ -125,7 +126,7 @@ const updateBruxo = (req, res) => {
     const id = parseInt(req.params.id);
     const { nome, casa, anoNascimento, especialidade, nivelMagia, varinha, ativo } = req.body;
     const idParaEditar = id;
-    const casaLista = [ "Grifinória", "Sonserina", "Corvinal", "Lufa-Lufa" ]
+    const casaLista = [ "Grifinória","Grifinoria", "Sonserina", "Corvinal", "Lufa-Lufa" ]
 
     if (isNaN(idParaEditar)) {
         return res.status(400).json({
@@ -157,7 +158,7 @@ const updateBruxo = (req, res) => {
     }
 
     if (casa) {
-        if (!casaLista.includes(casa.toLowerCase())) {
+        if (!casaLista.includes(casa)) {
             return res.status(400).json({
                 success: false,
                 message: `O campo 'casa' deve ser preenchido com uma das seguintes opções: ${casaLista.join(", ")}!`
@@ -186,6 +187,6 @@ const updateBruxo = (req, res) => {
         message: "Dados atializados com sucesso",
         bruxo: bruxoEditado
     });
-};
+}
 
 export { getAllBruxos, getBruxoById, createBruxo, deleteBruxos, updateBruxo };

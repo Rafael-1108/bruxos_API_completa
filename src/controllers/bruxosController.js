@@ -32,13 +32,28 @@ const getBruxoById = (req, res) => {
 
 const createBruxo = (req, res) => {
     const { nome, casa, anoNascimento, especialidade, nivelMagia, varinha, ativo } = req.body;
-
-console.log(varinha.length)
-
-    if (!nome || !casa || !varinha) {
+    const casaLista = [ "Grifinória","Grifinoria", "Sonserina", "Corvinal", "Lufa-Lufa" ]
+    
+    if (!nome || !varinha) {
         return res.status(400).json({
             sucess: false,
-            message: "Nome e casa são obrigatórios"
+            message: "Nome e varinha são obrigatórios",
+            error: "OBRIGATORY_ELEMENTS",
+            suggestions: [
+        "Check the wizard varinha",
+        "Check the wizard nome"
+            ]
+        });
+    }
+
+    if (!casa || !casaLista.includes(casa.toLowerCase())) {
+        return res.status(400).json({
+            sucess: false,
+            message: `O campo 'casa' deve ser existir e ser preenchido com uma das seguintes opções: ${casaLista.join(", ")}!`,
+            error: "OBRIGATORY_ELEMENTS",
+            suggestions: [
+        "Check the wizard casa"
+            ],
         });
     }
 
@@ -56,7 +71,7 @@ console.log(varinha.length)
 
     res.status(201).json({
         sucess: true,
-        message: "Bruxo cadastrado com sucesso",
+        message: "Novo bruxo matriculado em Hogwarts!",
         bruxo: novoBruxo
     });
 }
@@ -69,6 +84,20 @@ const deleteBruxos = (req, res) => {
             sucess: false,
             message: "O ID deve ser válido"
         })
+    }
+
+    const { admin } = req.body;
+
+     if (admin === false) {
+        return res.status(403).json({
+        status: 403,
+        success: false,
+        message: "Somente o Diretor pode executar essa magia!",
+        error: "AUTHENTICATION_DENIED",
+        suggestions: [
+            "Change the authentication."
+        ],
+        });
     }
 
     const bruxoParaRemover = bruxos.find(b => b.id === id);
@@ -85,10 +114,12 @@ const deleteBruxos = (req, res) => {
     bruxos.splice(0, bruxos.length, ...bruxosFiltrados);
 
     res.status(200).json({
+        status: 200,
         sucess: true,
-        message: `O bruxo ${id} foi removido com sucesso`
-    })
-} 
+        message: `O bruxo ${id} foi removido com sucesso`,
+        bruxoRemovido: bruxoParaRemover
+    });
+};
 
 const updateBruxo = (req, res) => {
     const id = parseInt(req.params.id);
@@ -107,15 +138,21 @@ const updateBruxo = (req, res) => {
 
     if (!bruxoExiste) {
         return res.status(404).json({
+            status: 404,
             success: false,
-            message: `O bruxo com o id: ${id} não foi encontrado`
+            message: "Não é possível editar um bruxo que não existe!",
+            error: "ID_NOT_FOUND",
+            suggestions: [
+        "Check the wizard id"
+            ],
         })
     }
 
     if ( !varinha || !nome || !anoNascimento ) {
         return res.status(400).json({
             success: false,
-            message: `O bruxo precisa ter varinha, nome e ano de nascimento (anoNascimento).`
+            message: `O bruxo precisa ter varinha, nome e ano de nascimento (anoNascimento).`,
+            
         })
     }
 
@@ -144,10 +181,11 @@ const updateBruxo = (req, res) => {
 
     const bruxoEditado = bruxos.find(bruxo => bruxo.id === idParaEditar);
     res.status(200).json({
+        status: 200,
         success: true, 
         message: "Dados atializados com sucesso",
         bruxo: bruxoEditado
-    }) 
-}
+    });
+};
 
 export { getAllBruxos, getBruxoById, createBruxo, deleteBruxos, updateBruxo };
